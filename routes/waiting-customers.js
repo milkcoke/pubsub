@@ -18,7 +18,8 @@ async function registerAtServer(storeId, request, response, rows = {}){
     // 연결 해제 이벤트 등록, 로그아웃 or 창 닫기 or Activity Destroy 시 세션 해제 => 배열에서 삭제.
     request.on('close', ()=>{
         console.log(`session id : ${clientSession.sessionId} is closed the session`);
-        storeMap.get(storeId).filter(storeSession=> storeSession.sessionId !== clientSession.sessionId);
+        // storeMap.get(storeId).filter(storeSession=> storeSession.sessionId !== clientSession.sessionId);
+        storeMap.set(storeId, storeMap.get(storeId).filter(storeSession=> storeSession.sessionId !== clientSession.sessionId));
     });
 
 }
@@ -50,8 +51,12 @@ router.get('/', (request, response)=>{
 
 router.get('/status', (request, response)=>{
     let sessionList = "";
-    for (const storeSessions of storeMap) {
-        sessionList += storeSessions + '\n';
+    for (const [key, value] of storeMap) {
+        sessionList += `[storeId] : ${key}\n`;
+        for(const session of value) {
+         sessionList += `sessionTime: ${session.sessionId}\n`;
+        }
+        sessionList += '======================\n';
     }
     response.status(200).end(sessionList);
 });
