@@ -20,7 +20,6 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
-
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -28,6 +27,14 @@ const server = http.createServer(app);
 server.listen(port, ()=>{
   console.log(`web server is on ${port}`);
 });
+const ALIVE_TIME_MS = 8 * 60 * 1000;
+// server.setTimeout(ALIVE_TIME_MS);
+server.timeout = 0;
+
+// The number of milliseconds of inactivity a server needs to wait for additional incoming data,
+// after it has finished writing the last response, before a socket will be destroyed.
+// server.keepAliveTimeout = ALIVE_TIME_MS;
+
 server.on('error', onError);
 server.on('listening', onListening);
 

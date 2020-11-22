@@ -5,6 +5,7 @@ const StoreSession = require('../model/storeSession');
 
 
 const storeMap = new Map();
+const keepAliveMS = 60 * 1000; // 1 minute
 
 // Array is object type
 // (mutable ->can update value of array with reference name (== variable name)
@@ -56,6 +57,14 @@ router.get('/', (request, response)=>{
     const result = {}
     response.writeHead(200, header);
     response.write(JSON.stringify(result));
+
+    // // keep alive persistently ping to client
+    // function keepAlive() {
+    //     // SSE comment for keep alive. Chrome times out after two minutes.
+    //     response.write(`:ping\n`);
+    //     setTimeout(keepAlive, keepAliveMS);
+    // }
+    // setTimeout(keepAlive, keepAliveMS);
     registerAtServer(request.params.storeId, request, response, result).then(() => console.log(`login session registering is complete!`));
 })
 
