@@ -14,8 +14,13 @@ const keepAliveMS = 60 * 1000; // 1 minute
 // filter is always iterate all element (N)
 // indexOf() breaks when meat targetValue and splice update without creating new object!
 // so I use splice & indexOf() instead of filter()
-Array.prototype.remove = function(targetValue){
-    this.splice(this.indexOf(targetValue), 1);
+Array.prototype.remove = function(targetSessionId){
+
+    const targetIndex = this.findIndex(session=> session.sessionId === targetSessionId);
+    console.log(`targetIndex : ${targetIndex}`);
+    this.splice(targetIndex, 1);
+    // console.log(`targetValue : ${targetValue}, indexOf : ${this.indexOf(targetValue)}`);
+    // this.splice(this.indexOf(targetValue), 1);
 }
 
 async function registerAtServer(storeId, request, response, rows = {}){
@@ -30,7 +35,6 @@ async function registerAtServer(storeId, request, response, rows = {}){
     // 연결 해제 이벤트 등록, 로그아웃 or 창 닫기 or Activity Destroy 시 세션 해제 => 배열에서 삭제.
     request.on('close', ()=>{
         console.log(`session id : ${clientSession.sessionId} is closed the session`);
-        // storeMap.get(storeId).filter(storeSession=> storeSession.sessionId !== clientSession.sessionId);
         storeMap.get(storeId).remove(clientSession.sessionId);
     });
 
