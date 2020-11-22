@@ -6,6 +6,17 @@ const StoreSession = require('../model/storeSession');
 
 const storeMap = new Map();
 
+// Array is object type
+// (mutable ->can update value of array with reference name (== variable name)
+// without creating new object using deep copy
+
+// filter is always iterate all element (N)
+// indexOf() breaks when meat targetValue and splice update without creating new object!
+// so I use splice & indexOf() instead of filter()
+Array.prototype.remove = function(targetValue){
+    this.splice(this.indexOf(targetValue), 1);
+}
+
 async function registerAtServer(storeId, request, response, rows = {}){
 
     // Register at storeMap, if not construct 'date?'
@@ -19,14 +30,13 @@ async function registerAtServer(storeId, request, response, rows = {}){
     request.on('close', ()=>{
         console.log(`session id : ${clientSession.sessionId} is closed the session`);
         // storeMap.get(storeId).filter(storeSession=> storeSession.sessionId !== clientSession.sessionId);
-        storeMap.set(storeId, storeMap.get(storeId).filter(storeSession=> storeSession.sessionId !== clientSession.sessionId));
+        storeMap.get(storeId).remove(clientSession.sessionId);
     });
 
 }
 
 async function updateToALLClient(storeId, newCustomer){
     // const sql = `select * FROM waiting_customer WHERE store_id = storeId`;
-    console.log(JSON.stringify(newCustomer));
     // this result is from sql execute
     const result = {
         name : 'vladimir',
@@ -51,9 +61,9 @@ router.get('/', (request, response)=>{
 
 router.get('/status', (request, response)=>{
     let sessionList = "";
-    for (const [key, value] of storeMap) {
+    for (const [key, sessionArray] of storeMap) {
         sessionList += `[storeId] : ${key}\n`;
-        for(const session of value) {
+        for(const session of sessionArray) {
          sessionList += `sessionTime: ${session.sessionId}\n`;
         }
         sessionList += '======================\n';
