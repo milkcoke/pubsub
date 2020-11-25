@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<h1>Login</h1>
+
+<% if (messages.error) { %>
+    <%= messages.error %>
+    <% }%>
+<form action="/login" method="post">
+    <div>
+        <label for="id">ID</label>
+        <input type="text" id="id" name="id" required>
+    </div>
+    <div>
+        <label for="pw">Password</label>
+        <input type="password" id="password" name="pw" required>
+    </div>
+    <button type="submit">Login</button>
+</form>
+
+<button type="button" onclick="location.href='/register'">Register</button>
+</body>
+
+</html>
