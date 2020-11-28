@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const refreshTokens = [];
 
 function generateAccessToken(user) {
-
     //usually use '15 minutes ~ 30 minutes'
     //but in my app.. realtime update of waiting list -> longer than 30 minutes
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15s'})
@@ -52,6 +51,14 @@ router.post('/token', (request, response)=>{
         });
     }
 });
+
+router.delete('/logout', (request, response)=>{
+    console.dir(refreshTokens);
+    const targetTokenIndex = refreshTokens.findIndex(refreshToken=> refreshToken === request.body.token);
+    if(targetTokenIndex === -1) return response.status(404).json({message: "there is no refresh token you indicate"});
+    refreshTokens.splice(targetTokenIndex, 1);
+    return response.sendStatus(204);
+})
 
 module.exports = router;
 
