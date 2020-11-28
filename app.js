@@ -13,8 +13,6 @@ const updateRouter = require('./routes/update');
 const waitingCustomerRouter = require('./routes/waiting-customers');
 const app = express();
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
-
 const flash = require('express-flash')
 const session = require('express-session');
 global.users = [];

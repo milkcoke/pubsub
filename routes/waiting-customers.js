@@ -43,10 +43,6 @@ async function registerAtServer(storeId, request, response, rows = {}){
 async function updateToALLClient(storeId, newCustomer){
     // const sql = `select * FROM waiting_customer WHERE store_id = storeId`;
     // this result is from sql execute
-    const result = {
-        name : 'vladimir',
-        age : 15
-    };
 
     storeMap.get(storeId).forEach(client => {
         client.response.write(`${JSON.stringify(newCustomer)}\n`);
