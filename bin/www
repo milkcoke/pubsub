@@ -7,14 +7,16 @@
 const app = require('../app');
 const debug = require('debug')('pubsub:server');
 const http = require('http');
+const authenticationApp = require('../authenticationApp');
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
+const mainPort = normalizePort(process.env.PORT || '3000');
+const authenticationServerPort = normalizePort(4000);
+app.set('port', mainPort);
+authenticationApp.set('port', authenticationServerPort);
 /**
  * Create HTTP server.
  */
@@ -24,9 +26,13 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, ()=>{
-  console.log(`web server is on ${port}`);
+server.listen(mainPort, ()=>{
+  console.log(`web server is on ${mainPort}`);
 });
+const authServer = http.createServer(authenticationApp);
+authServer.listen(authenticationServerPort, ()=>{
+  console.log(`authentication server is on ${authenticationServerPort}`);
+})
 const ALIVE_TIME_MS = 8 * 60 * 1000;
 // server.setTimeout(ALIVE_TIME_MS);
 // server.timeout = 0;
@@ -67,9 +73,9 @@ function onError(error) {
     throw error;
   }
 
-  const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  const bind = typeof mainPort === 'string'
+    ? 'Pipe ' + mainPort
+    : 'Port ' + mainPort;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {

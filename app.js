@@ -4,7 +4,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const dotenv = require('dotenv');
-console.log(__dirname);
 dotenv.config({path: path.join(__dirname, '.env')});
 
 const indexRouter = require('./routes/index');
@@ -14,6 +13,8 @@ const updateRouter = require('./routes/update');
 const waitingCustomerRouter = require('./routes/waiting-customers');
 const app = express();
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+
 const flash = require('express-flash')
 const session = require('express-session');
 global.users = [];
@@ -52,6 +53,9 @@ app.use('/:storeId/waiting-customers', waitingCustomerRouter);
 
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
+
+// posts test for JWT
+app.use('/posts', require('./routes/jwt_test/posts'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

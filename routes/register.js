@@ -8,7 +8,7 @@ router.get('/', (request, response)=>{
     response.render('register', { title: 'Session-Cookie Test Code & SSE' });
 });
 
-console.log(`global users variable : ${global.users}`);
+// console.log(`global users variable : ${global.users}`);
 router.post('/', async (request, response)=>{
     const {id, pw, name='anonymous'} = request.body;
     console.log(`id: ${id}, pw: ${pw}, name:${name}`);
